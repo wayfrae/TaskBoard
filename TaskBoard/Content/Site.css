@@ -24,10 +24,24 @@ textarea {
     max-width: 280px;
 }
 
-
 .card {
     max-width: 24rem;
     margin: 10px;
+}
+
+.fa-trash-o, .fa-lock, .fa-unlock {
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.fa-trash-o:hover, .fa-unlock:hover, .fa-lock:hover {
+    background-color: lightgray;
+    transition: .3s;
+
+}
+
+footer{
+    color: lightgray;
 }
 
 
