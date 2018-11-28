@@ -88,6 +88,7 @@ namespace TaskBoard.Controllers
             SqlDataReader dataReader = command.ExecuteReader();
 
             Board board = null;
+            //
 
             while (dataReader.Read())
             {
