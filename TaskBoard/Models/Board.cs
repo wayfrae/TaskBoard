@@ -11,6 +11,6 @@ namespace TaskBoard.Models
         public string Title { get; set; }
         public string Body { get; set; }
         public int Owner { get; set; }
-        public Boolean IsLocked { get; set; }
+        public int IsLocked { get; set; }
     }
 }
