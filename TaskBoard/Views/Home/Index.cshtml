@@ -1,115 +1,47 @@
 ﻿@{
     ViewBag.Title = "Home Page";
 }
+
+@model TaskBoard.Models.BoardViewModel
+
+<div class="input-group mb-3">
+    <div class="input-group-prepend">
+        <label class="input-group-text" for="groupSelection">Group: </label>
+    </div>
+    <select class="custom-select" id="groupSelection">
+        @foreach (var group in Model.Groups)
+        {
+            <option>@Html.DisplayFor(item => group.Name)</option>
+        }
+    </select>
+</div>
+
 <div class="row">
-    <div class="card">
-        <div class="card-header">
-            <span class="h4 card-title">Board Title</span>
-            <span 
-                  name="lockIcon"
-                  data-toggle="tooltip" 
-                  data-placement="top"
-                  title="Click to unlock" class="fa fa-2x fa-lock pull-right"></span>
-            <span 
-                  name="unlockIcon"
-                  data-toggle="tooltip" 
-                  data-placement="top"
-                  title="Click to lock" 
-                  class="fa fa-2x fa-unlock pull-right"></span>
+    @foreach (var board in Model.Boards)
+    {
+        <div class="card">
+            <div class="card-header">
+                <span class="h4 card-title">@Html.DisplayFor(item => board.Title)</span>
+                <span name="lockIcon"
+                      data-toggle="tooltip"
+                      data-placement="top"
+                      title="Click to unlock" class="fa fa-2x fa-lock pull-right"></span>
+                <span name="unlockIcon"
+                      data-toggle="tooltip"
+                      data-placement="top"
+                      title="Click to lock"
+                      class="fa fa-2x fa-unlock pull-right"></span>
+            </div>
+            <div class="card-body">
+                <p contenteditable="true" class="card-text">@Html.DisplayFor(item => board.Body)</p>
+                <span data-toggle="tooltip"
+                      data-placement="top"
+                      title="Delete board"
+                      class="fa fa-2x fa-trash-o text-danger pull-right">
+                </span>
+            </div>
         </div>
-        <div class="card-body">
-            <p class="card-text">Some quick example text to build on the board title and make up the bulk of the board's content.</p>
-            
-            <span data-toggle="tooltip"
-                    data-placement="top"
-                    title="Delete board"
-                    class="fa fa-2x fa-trash-o text-danger pull-right">
-            </span>            
-            
-        </div>  
-    </div>
-    <div class="card">
-        <div class="card-header">
-            <span class="h4 card-title">Board Title</span>
-            <span name="lockIcon"
-                  data-toggle="tooltip"
-                  data-placement="top"
-                  title="Click to unlock" class="fa fa-2x fa-lock pull-right"></span>
-            <span name="unlockIcon"
-                  data-toggle="tooltip"
-                  data-placement="top"
-                  title="Click to lock"
-                  class="fa fa-2x fa-unlock pull-right"></span>
-        </div>
-        <div class="card-body">
-            <p class="card-text">Some quick example text to build on the board title and make up the bulk of the board's content.</p>
-            <span data-toggle="tooltip"
-                  data-placement="top"
-                  title="Delete board"
-                  class="fa fa-2x fa-trash-o text-danger pull-right"></span>
-        </div>
-    </div>
-    <div class="card">
-        <div class="card-header">
-            <span class="h4 card-title">Board Title</span>
-            <span name="lockIcon"
-                  data-toggle="tooltip"
-                  data-placement="top"
-                  title="Click to unlock" class="fa fa-2x fa-lock pull-right"></span>
-            <span name="unlockIcon"
-                  data-toggle="tooltip"
-                  data-placement="top"
-                  title="Click to lock"
-                  class="fa fa-2x fa-unlock pull-right"></span>
-        </div>
-        <div class="card-body">
-            <p class="card-text">Some quick example text to build on the board title and make up the bulk of the board's content.</p>
-            <span data-toggle="tooltip"
-                  data-placement="top"
-                  title="Delete board"
-                  class="fa fa-2x fa-trash-o text-danger pull-right"></span>
-        </div>
-    </div>
-    <div class="card">
-        <div class="card-header">
-            <span class="h4 card-title">Board Title</span>
-            <span name="lockIcon"
-                  data-toggle="tooltip"
-                  data-placement="top"
-                  title="Click to unlock" class="fa fa-2x fa-lock pull-right"></span>
-            <span name="unlockIcon"
-                  data-toggle="tooltip"
-                  data-placement="top"
-                  title="Click to lock"
-                  class="fa fa-2x fa-unlock pull-right"></span>
-        </div>
-        <div class="card-body">
-            <p class="card-text">Some quick example text to build on the board title and make up the bulk of the board's content.</p>
-            <span data-toggle="tooltip"
-                  data-placement="top"
-                  title="Delete board"
-                  class="fa fa-2x fa-trash-o text-danger pull-right"></span>
-        </div>
-    </div>
-    <div class="card">
-        <div class="card-header">
-            <span class="h4 card-title">Board Title</span>
-            <span name="lockIcon"
-                  data-toggle="tooltip"
-                  data-placement="top"
-                  title="Click to unlock" class="fa fa-2x fa-lock pull-right"></span>
-            <span name="unlockIcon"
-                  data-toggle="tooltip"
-                  data-placement="top"
-                  title="Click to lock"
-                  class="fa fa-2x fa-unlock pull-right"></span>
-        </div>
-        <div class="card-body">
-            <p class="card-text">Some quick example text to build on the board title and make up the bulk of the board's content.</p>
-            <span data-toggle="tooltip"
-                  data-placement="top"
-                  title="Delete board"
-                  class="fa fa-2x fa-trash-o text-danger pull-right"></span>
-        </div>
-    </div>
+    }
+
+
 </div>

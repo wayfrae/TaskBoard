@@ -11,6 +11,8 @@ namespace TaskBoard.Controllers
 {
     public class BoardController : Controller
     {
+        private string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
+
         public ActionResult Index()
         {
             return View();
@@ -19,7 +21,7 @@ namespace TaskBoard.Controllers
         [NonAction]
         public void CreateBoard(string title, string body, int group)
         {
-            string connectionString = "";
+            
             SqlConnection conn = new SqlConnection(connectionString);
             conn.Open();
 
@@ -34,7 +36,7 @@ namespace TaskBoard.Controllers
         [NonAction]
         public void CreateGroup(string name)
         {
-            string connectionString = "";
+            
             SqlConnection conn = new SqlConnection(connectionString);
             conn.Open();
 
@@ -49,7 +51,7 @@ namespace TaskBoard.Controllers
         [NonAction]
         public void EditBoard(int id, string title, string body)
         {
-            string connectionString = "";
+            
             SqlConnection conn = new SqlConnection(connectionString);
             conn.Open();
 
@@ -64,7 +66,7 @@ namespace TaskBoard.Controllers
         [NonAction]
         public void EditGroup(int id, string name)
         {
-            string connectionString = "";
+            
             SqlConnection conn = new SqlConnection(connectionString);
             conn.Open();
 
@@ -79,7 +81,7 @@ namespace TaskBoard.Controllers
         [NonAction]
         public Board GetBoard(int id)
         {
-            string connectionString = "";
+            
             SqlConnection conn = new SqlConnection(connectionString);
             conn.Open();
 
@@ -110,9 +112,99 @@ namespace TaskBoard.Controllers
         }
 
         [NonAction]
+        public List<Board> GetAllBoards()
+        {
+            string sql = "select * from boards";
+
+            //Create a new DataSet
+            DataSet ds = new DataSet();
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                using (SqlDataAdapter adapter = new SqlDataAdapter())
+                {
+                    SqlCommand cmd = new SqlCommand(sql, conn);
+
+                    //Open the connection to the database
+                    conn.Open();
+
+                    //Add the information for the SelectCommand using the SQL statement and the connection object
+                    adapter.SelectCommand = new SqlCommand(sql, conn);
+                    adapter.SelectCommand.CommandTimeout = 0;
+
+                    //Fill up the DataSet with data
+                    adapter.Fill(ds);
+                }
+            }
+
+            //Set the number of values returned
+            int numRows = ds.Tables[0].Rows.Count;
+            List<Board> boards = new List<Board>();
+
+            for(int i = 0; i < numRows; i++)
+            {
+                boards.Add(new Board()
+                {
+                    ID = int.Parse(ds.Tables[0].Rows[i][0].ToString()),
+                    Title = ds.Tables[0].Rows[i][1].ToString(),
+                    Body = ds.Tables[0].Rows[i][2].ToString(),
+                    Owner = int.Parse(ds.Tables[0].Rows[i][3].ToString()),
+                    IsLocked = int.Parse(ds.Tables[0].Rows[i][4].ToString())
+                });
+            }          
+
+            return boards;
+        }
+
+        [NonAction]
+        public List<Group> GetAllGroups()
+        {
+            string sql = "select * from groups";
+
+            //Create a new DataSet
+            DataSet ds = new DataSet();
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                using (SqlDataAdapter adapter = new SqlDataAdapter())
+                {
+                    SqlCommand cmd = new SqlCommand(sql, conn);
+
+                    //Open the connection to the database
+                    conn.Open();
+
+                    //Add the information for the SelectCommand using the SQL statement and the connection object
+                    adapter.SelectCommand = new SqlCommand(sql, conn);
+                    adapter.SelectCommand.CommandTimeout = 0;
+
+                    //Fill up the DataSet with data
+                    adapter.Fill(ds);
+                }
+            }
+
+            //Set the number of values returned
+            int numRows = ds.Tables[0].Rows.Count;
+            List<Group> groups = new List<Group>();
+
+            for (int i = 0; i < numRows; i++)
+            {
+                groups.Add(new Group()
+                {
+                    ID = int.Parse(ds.Tables[0].Rows[i][0].ToString()),
+                    Name = ds.Tables[0].Rows[i][1].ToString()                    
+                });
+            }
+
+            return groups;
+        }
+
+
+
+
+        [NonAction]
         public Group GetGroup(int id)
         {
-            string connectionString = "";
+            
             SqlConnection conn = new SqlConnection(connectionString);
             conn.Open();
 
@@ -155,7 +247,7 @@ namespace TaskBoard.Controllers
         [NonAction]
         public void RemoveBoard(int id)
         {
-            string connectionString = "";
+            
             SqlConnection conn = new SqlConnection(connectionString);
             conn.Open();
 
@@ -170,7 +262,7 @@ namespace TaskBoard.Controllers
         [NonAction]
         public void RemoveGroup(int id)
         {
-            string connectionString = "";
+            
             SqlConnection conn = new SqlConnection(connectionString);
             conn.Open();
 
@@ -189,7 +281,7 @@ namespace TaskBoard.Controllers
         [NonAction]
         public void RemoveLock(int id)
         {
-            string connectionString = "";
+            
             SqlConnection conn = new SqlConnection(connectionString);
             conn.Open();
 
@@ -204,7 +296,7 @@ namespace TaskBoard.Controllers
         [NonAction]
         public void SetLock(int id)
         {
-            string connectionString = "";
+            
             SqlConnection conn = new SqlConnection(connectionString);
             conn.Open();
 

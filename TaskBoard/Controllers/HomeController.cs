@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using TaskBoard.Models;
 
 namespace TaskBoard.Controllers
 {
@@ -10,8 +11,12 @@ namespace TaskBoard.Controllers
     {
         public ActionResult Index()
         {
-            return View();
-        }
+            BoardController bc = new BoardController();
+            BoardViewModel data = new BoardViewModel();
+            data.Groups = bc.GetAllGroups();
+            data.Boards = bc.GetAllBoards();
+            return View("Index", data);
+        }        
 
         public ActionResult Chat()
         {
