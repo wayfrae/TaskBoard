@@ -100,7 +100,7 @@ namespace TaskBoard.Controllers
                     Title = dataReader.GetString(0),
                     Body = dataReader.GetString(1),
                     Owner = dataReader.GetInt32(2),
-                    IsLocked = dataReader.GetInt32(3)
+                    IsLocked = dataReader.GetInt32(3) == 0 ? false : true
                 };
             }
 
@@ -149,7 +149,7 @@ namespace TaskBoard.Controllers
                     Title = ds.Tables[0].Rows[i][1].ToString(),
                     Body = ds.Tables[0].Rows[i][2].ToString(),
                     Owner = int.Parse(ds.Tables[0].Rows[i][3].ToString()),
-                    IsLocked = int.Parse(ds.Tables[0].Rows[i][4].ToString())
+                    IsLocked = int.Parse(ds.Tables[0].Rows[i][4].ToString()) == 0 ? false : true
                 });
             }          
 
@@ -222,7 +222,7 @@ namespace TaskBoard.Controllers
                     Title = dataReader.GetString(1),
                     Body = dataReader.GetString(2),
                     Owner = id,
-                    IsLocked = dataReader.GetInt32(3)
+                    IsLocked = dataReader.GetInt32(3) == 0 ? false : true
                 });
             }
 
