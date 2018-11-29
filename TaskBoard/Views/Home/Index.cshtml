@@ -11,17 +11,17 @@
     <select class="custom-select" id="groupSelection">
         @foreach (var group in Model.Groups)
         {
-            <option>@Html.DisplayFor(item => group.Name)</option>
+            <option value="@Html.DisplayFor(item => group.ID)">@Html.DisplayFor(item => group.Name)</option>
         }
     </select>
 </div>
 
-<div class="row">
+<div class="row" id="boardContainer">
     @foreach (var board in Model.Boards)
     {
         <div class="card" boardID="@Html.DisplayFor(item=>board.ID)">
             <div class="card-header">
-                <span class="h4 card-title">@Html.DisplayFor(item => board.Title)</span>
+                <span class="h4 card-title" contenteditable="true">@Html.DisplayFor(item => board.Title)</span>
                 <span name="lockIcon"
                       data-toggle="tooltip"
                       data-placement="top"
