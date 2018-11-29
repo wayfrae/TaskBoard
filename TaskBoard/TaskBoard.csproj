@@ -171,6 +171,7 @@
     <Compile Include="Models\Board.cs" />
     <Compile Include="Models\BoardViewModel.cs" />
     <Compile Include="Models\Group.cs" />
+    <Compile Include="Models\Singletoncs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="Controllers\BoardController.cs" />
