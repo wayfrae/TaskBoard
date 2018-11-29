@@ -15,7 +15,7 @@ namespace TaskBoard.Hubs
         public void Send(string json)
         {
             JObject jobject = JObject.Parse(json);
-            Clients.All.broadcastC(instance.Values);
+            Clients.All.broadcastC(instance.Boards);
         }
     }
 }
