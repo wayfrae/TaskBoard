@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using TaskBoard.Models;
+using TaskBoard.Controllers;
 
 namespace TaskBoard.Controllers
 {
@@ -12,10 +13,10 @@ namespace TaskBoard.Controllers
         public ActionResult Index()
         {
             BoardController bc = new BoardController();
-            BoardViewModel data = new BoardViewModel();
-            data.Groups = bc.GetAllGroups();
-            data.Boards = bc.GetAllBoards();
-            return View("Index", data);
+            Singleton singleton = Singleton.Instance;
+            singleton.Groups = bc.GetAllGroups();
+            singleton.Boards = bc.GetAllBoards();
+            return View("Index", singleton);
         }        
 
         public ActionResult Chat()

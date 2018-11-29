@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
@@ -26,6 +27,24 @@ namespace TaskBoard.Controllers
             conn.Open();
 
             string sql = "insert into boards values ('" + title + "', '" + body + "', " + group + ", 0)";
+            SqlCommand command = new SqlCommand(sql, conn);
+            command.ExecuteNonQuery();
+
+            command.Dispose();
+            conn.Close();
+        }
+
+        [NonAction]
+        public void CreateOrEditBoard(Board board)
+        {
+
+            SqlConnection conn = new SqlConnection(connectionString);
+            conn.Open();
+
+            string sql = "IF EXISTS (SELECT * FROM Products WHERE id = " + board.ID + ") BEGIN update board set title='" 
+                + board.Title + "', body='" + board.Body + "' where id=" + board.ID 
+                + " END ELSE BEGIN insert into boards values ('" + board.Title + "', '" + board.Body + "', " + board.Owner + ", + " + board.IsLocked + ") END";
+
             SqlCommand command = new SqlCommand(sql, conn);
             command.ExecuteNonQuery();
 
@@ -112,7 +131,7 @@ namespace TaskBoard.Controllers
         }
 
         [NonAction]
-        public List<Board> GetAllBoards()
+        public ObservableCollection<Board> GetAllBoards()
         {
             string sql = "select * from boards";
 
@@ -139,7 +158,7 @@ namespace TaskBoard.Controllers
 
             //Set the number of values returned
             int numRows = ds.Tables[0].Rows.Count;
-            List<Board> boards = new List<Board>();
+            ObservableCollection<Board> boards = new ObservableCollection<Board>();
 
             for(int i = 0; i < numRows; i++)
             {
@@ -157,7 +176,7 @@ namespace TaskBoard.Controllers
         }
 
         [NonAction]
-        public List<Group> GetAllGroups()
+        public ObservableCollection<Group> GetAllGroups()
         {
             string sql = "select * from groups";
 
@@ -184,7 +203,7 @@ namespace TaskBoard.Controllers
 
             //Set the number of values returned
             int numRows = ds.Tables[0].Rows.Count;
-            List<Group> groups = new List<Group>();
+            ObservableCollection<Group> groups = new ObservableCollection<Group>();
 
             for (int i = 0; i < numRows; i++)
             {
