@@ -19,7 +19,7 @@
 <div class="row">
     @foreach (var board in Model.Boards)
     {
-        <div class="card">
+        <div class="card" boardID="@Html.DisplayFor(item=>board.ID)">
             <div class="card-header">
                 <span class="h4 card-title">@Html.DisplayFor(item => board.Title)</span>
                 <span name="lockIcon"
