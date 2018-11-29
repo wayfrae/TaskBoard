@@ -21,8 +21,7 @@
                 <li class="nav-link">@Html.ActionLink("Contact", "Contact", "Home", new { area = "" }, new { @class = "nav-link" })</li>
             </ul>
         </div>
-    </nav>
-    <h1>&nbsp;</h1>
+    </nav>    
     <div class="container-fluid body-content">
         @RenderBody()
         <hr />
@@ -30,9 +29,7 @@
             <p>&copy; @DateTime.Now.Year - Bo Yu - Jacob Pitkin - Zach Frazier</p>
         </footer>
     </div>
-
-    @Scripts.Render("~/Scripts/popper.js")
-    @Scripts.Render("~/Scripts/popper-utils.js")
+        
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @Scripts.Render("~/Scripts/boards.js")

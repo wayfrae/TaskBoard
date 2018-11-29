@@ -21,17 +21,28 @@
 input,
 select,
 textarea {
-    max-width: 280px;
+    max-width: 308px;
 }
 
+nav{
+    margin-bottom: 24px;
+}
+
+
 .card {
-    max-width: 24rem;
-    margin: 10px;
+    width: 24rem;
+    margin: 12px;
 }
 
 .fa-trash-o, .fa-lock, .fa-unlock {
     border-radius: 5px;
     padding: 5px;
+}
+
+.fa-trash-o{
+    position: absolute;
+    bottom:5px;
+    right: 5px;
 }
 
 .fa-trash-o:hover, .fa-unlock:hover, .fa-lock:hover {
@@ -40,8 +51,18 @@ textarea {
 
 }
 
-footer{
+footer {
     color: lightgray;
 }
 
+textarea{
+    width: 22rem;
+    column-count: 80;
+    outline: none;
+    min-height: 200px;
+    border: none;
+    overflow: auto;
+    resize: none;
+    padding: 0;
+}
 
