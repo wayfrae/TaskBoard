@@ -1,7 +1,7 @@
 ﻿body {
     padding-top: 50px;
     padding-bottom: 20px;
-    background-color: dimgray;
+    background-color: gray;
 }
 
 /* Set padding to keep content from hitting the edges */
@@ -28,6 +28,21 @@ nav{
     margin-bottom: 24px;
 }
 
+#newBoard {
+    width: 50px;
+    height: 50px;
+    margin-top: 85px;
+    padding: 25px;
+    border-radius: 50%;
+    background-color: white;
+}
+
+#newBoardIcon{
+    position: absolute;
+    top: 18px;
+    right: 1px;
+    left: 2px;
+}
 
 .card {
     width: 24rem;

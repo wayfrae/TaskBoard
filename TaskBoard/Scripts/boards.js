@@ -4,8 +4,10 @@ $(function () {
 	$('[data-toggle="tooltip"]').tooltip()
 })
 
+//hide some elements on load
 $(document).ready(function () {
-	$("span.fa-lock").hide();
+    $("span.fa-lock").hide();
+    $("#groupForm").hide();
 });
 
 $("span.fa-unlock").click(function () {
@@ -70,6 +72,22 @@ $(function () {
         });
     });
 });
+
+//animate new board button
+$("#newBoard").mousedown(function () {
+    $(this).removeClass("shadow-lg");
+    $(this).css("margin-top", "87px");
+});
+$("#newBoard").mouseup(function () {
+    $(this).addClass("shadow-lg");
+    $(this).css("margin-top", "85px");
+});
+
+//animate group form
+$("#addGroupButton").click(function () {
+    $("#groupForm").toggle("slide", { direction: "left"}, 500);
+});
+
 
 //update all the boards
 function updateAllBoards(obj) {

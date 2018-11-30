@@ -14,12 +14,23 @@
             <option value="@Html.DisplayFor(item => group.ID)">@Html.DisplayFor(item => group.Name)</option>
         }
     </select>
+    <div class="input-group-append">
+        <button class="btn btn-secondary" id="addGroupButton" type="button"><span class="fa fa-user-plus"></span></button>
+    </div>
+    <div class="input-group-append" id="groupForm">
+        <input type="text" class="form-control" style="border-radius: 0;"  placeholder="Group Name" aria-label="Group Name">
+        <div class="input-group-append">
+            <button class="btn btn-secondary" style="border-top-left-radius: 0; border-bottom-left-radius: 0;"  type="button" id="groupFormButton">Confirm</button>
+        </div>
+    </div>
+    
+
 </div>
 
 <div class="row" id="boardContainer">
     @foreach (var board in Model.Boards)
     {
-        <div class="card" boardID="@Html.DisplayFor(item=>board.ID)">
+        <div class="card shadow" boardID="@Html.DisplayFor(item=>board.ID)">
             <div class="card-header">
                 <span class="h4 card-title" contenteditable="true">@Html.DisplayFor(item => board.Title)</span>
                 <span name="lockIcon"
@@ -42,6 +53,7 @@
             </div>
         </div>
     }
+    <div class="card text-center shadow-lg" id="newBoard"><span class="fa fa-plus" id="newBoardIcon"></span></div>
 
 
 </div>
