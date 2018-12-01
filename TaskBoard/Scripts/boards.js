@@ -24,7 +24,8 @@ function getJSON() {
     var obj = [];
     var id, title, body, locked, owner;
     var count = 0;
-    $('#boardContainer').children('div.card').each(function () {
+    $('#boardContainer').children('div.card:not(#newBoard)').each(function () {
+        console.log($(this));
         id = $(this).attr('boardID');
         owner = $('#groupSelection').find(":selected").val();
         $(this).children('div').each(function () {
@@ -48,7 +49,7 @@ function getJSON() {
         obj.push({ id: id, title: title, body: body, locked: locked, owner: owner });
         count++;
     });
-    console.log(obj);
+    //console.log(obj);
     return JSON.stringify(obj);
 }
 
