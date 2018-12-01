@@ -38,18 +38,27 @@ namespace TaskBoard.Controllers
         public void CreateOrEditBoard(Board board)
         {
 
-            SqlConnection conn = new SqlConnection(connectionString);
-            conn.Open();
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+                string sql = "IF EXISTS (SELECT * FROM boards WHERE id = @ID) BEGIN update boards set title="
+                + "@title, body=@body where id=@ID END ELSE BEGIN insert into boards values ("
+                + "@title, @body, @owner, @locked) END";
+                SqlCommand command = new SqlCommand(sql, conn);
+                command.Parameters.Add("@ID", SqlDbType.Int);
+                command.Parameters.Add("@title", SqlDbType.NVarChar);
+                command.Parameters.Add("@body", SqlDbType.NVarChar);
+                command.Parameters.Add("@owner", SqlDbType.Int);
+                command.Parameters.Add("@locked", SqlDbType.Int);
+                command.Parameters["@ID"].Value = board.ID;
+                command.Parameters["@title"].Value = board.Title;
+                command.Parameters["@body"].Value = board.Body;
+                command.Parameters["@owner"].Value = board.Owner;
+                command.Parameters["@locked"].Value = board.IsLocked.Equals("True") ? 1 : 0;
+                command.ExecuteNonQuery();
+            }
 
-            string sql = "IF EXISTS (SELECT * FROM Products WHERE id = " + board.ID + ") BEGIN update board set title='" 
-                + board.Title + "', body='" + board.Body + "' where id=" + board.ID 
-                + " END ELSE BEGIN insert into boards values ('" + board.Title + "', '" + board.Body + "', " + board.Owner + ", + " + board.IsLocked + ") END";
-
-            SqlCommand command = new SqlCommand(sql, conn);
-            command.ExecuteNonQuery();
-
-            command.Dispose();
-            conn.Close();
+                
         }
 
         [NonAction]
