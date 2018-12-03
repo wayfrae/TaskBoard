@@ -49,18 +49,18 @@ nav{
     margin: 12px;
 }
 
-.fa-trash-o, .fa-lock, .fa-unlock {
+.fa-trash-alt, .fa-trash-o, .fa-lock, .fa-unlock {
     border-radius: 5px;
     padding: 5px;
 }
 
-.fa-trash-o{
+.fa-trash-alt, .fa-trash-o{
     position: absolute;
-    bottom:5px;
-    right: 5px;
+    bottom:15px;
+    right: 20px;
 }
 
-.fa-trash-o:hover, .fa-unlock:hover, .fa-lock:hover {
+.fa-trash-o:hover, .fa-trash-alt:hover, .fa-unlock:hover, .fa-lock:hover {
     background-color: lightgray;
     transition: .3s;
 
