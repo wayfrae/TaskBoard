@@ -1,5 +1,7 @@
 ﻿//set signalR
 
+var boardIdForRemoval = "";
+
 $(function () {
     $('[data-toggle="tooltip"]').tooltip();
 });
@@ -36,7 +38,7 @@ function getJSON(type) {
         var name = $("#groupForm").children("input:first").val();
         obj.push({ type: type, name: name });
     } else if (type == "removeBoard") {
-        // get board id
+        obj.push({ type: type, boardId: boardIdForRemoval });
     } else {
         obj.push({ type: type });
     }
@@ -87,8 +89,6 @@ $(function () {
     $.connection.hub.start().done(function () {
         $('div.card').keyup(function () {
             // Call the Send method on the hub.
-
-            console.log("sending");
             server.server.send(getJSON("normal"));
         });
 
@@ -98,6 +98,11 @@ $(function () {
 
         $("#groupFormButton").click(function () {
             server.server.send(getJSON("addGroup"));
+        });
+
+        $(".fa-trash-alt").click(function () {
+            boardIdForRemoval = this.parentNode.parentNode.boardid;
+            server.server.send(getJSON("removeBoard"));
         });
     });
 });
