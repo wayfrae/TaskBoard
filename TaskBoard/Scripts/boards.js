@@ -24,9 +24,21 @@ $("#groupFormButton").click(function () {
 
 });
 
-function getJSON() {
+function getJSON(type) {
     var obj = [];
     var id, title, body, locked, owner;
+
+    if (type == "addBoard") {
+        // get board id
+    } else if (type == "addGroup") {
+        var name = $("#groupForm").children("input:first").val();
+        obj.push({ type: type, name: name });
+    } else if (type == "removeBoard") {
+        // get board id
+    } else {
+        obj.push({ type: type });
+    }
+
     var count = 0;
     $('#boardContainer').children('div.card:not(#newBoard)').each(function () {
         console.log($(this));
@@ -73,7 +85,13 @@ $(function () {
     $.connection.hub.start().done(function () {
         $('div.card').keyup(function () {
             // Call the Send method on the hub.
-            server.server.send(getJSON());
+
+            console.log("sending");
+            server.server.send(getJSON("normal"));
+        });
+
+        $("#groupFormButton").click(function () {
+            server.server.send(getJSON("addGroup"));
         });
     });
 });

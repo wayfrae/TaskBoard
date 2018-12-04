@@ -38,7 +38,7 @@ namespace TaskBoard.Hubs
         {
             //Console.WriteLine(json);
             //JObject jobject = JObject.Parse(json);
-            Clients.All.broadcast(json);
+            //Clients.All.broadcast(json);
             instance.Boards = Parse(json);
         }
 
@@ -47,20 +47,50 @@ namespace TaskBoard.Hubs
             ObservableCollection<Board> boards = new ObservableCollection<Board>();
 
             dynamic obj = JsonConvert.DeserializeObject(json);
+            Boolean cont = true;
+            int index = 0;
             foreach (var item in obj)
             {
-                if (item != null)
+                if (index < 1)
                 {
-                    boards.Add(new Board
+                    if (item.type == "addBoard")
                     {
-                        ID = item.id,
-                        Title = item.title,
-                        Body = item.body,
-                        Owner = item.owner,
-                        IsLocked = (item.isLocked == 1) ? true : false
-                    });
+                        AddBoard(item.groupId);
+                        cont = false;
+                    }
+                    else if (item.type == "addGroup")
+                    {
+                        AddGroup(item.name);
+                        cont = false;
+                    }
+                    else if (item.type == "removeBoard")
+                    {
+                        DeleteBoard(item.boardId);
+                        cont = false;
+                    }
                 }
+                else
+                {
+                    if (item != null)
+                    {
+                        boards.Add(new Board
+                        {
+                            ID = item.id,
+                            Title = item.title,
+                            Body = item.body,
+                            Owner = item.owner,
+                            IsLocked = (item.isLocked == 1) ? true : false
+                        });
+                    }
+                }
+
+                index++;
                 
+            }
+
+            if (cont)
+            {
+                Clients.All.broadcast(json);
             }
             
             return boards;
