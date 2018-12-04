@@ -25,19 +25,19 @@ namespace TaskBoard.Hubs
         private ObservableCollection<Board> Parse(string json)
         {
             ObservableCollection<Board> boards = new ObservableCollection<Board>();
-
             dynamic obj = JsonConvert.DeserializeObject(json);
             foreach (var item in obj)
             {
                 if (item != null)
                 {
+                    var test = item.locked.ToString();
                     boards.Add(new Board
                     {
                         ID = item.id,
                         Title = item.title,
                         Body = item.body,
                         Owner = item.owner,
-                        IsLocked = (item.isLocked == 1) ? true : false
+                        IsLocked = (item.locked.ToString().Equals("1")) ? true : false
                     });
                 }
                 
