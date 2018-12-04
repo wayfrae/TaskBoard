@@ -29,7 +29,9 @@ function getJSON(type) {
     var id, title, body, locked, owner;
 
     if (type == "addBoard") {
-        // get board id
+        var selection = $("#groupSelection");
+        var groupId = selection.children[selection.selectedIndex].value;
+        obj.push({ type: type, groupId: groupId });
     } else if (type == "addGroup") {
         var name = $("#groupForm").children("input:first").val();
         obj.push({ type: type, name: name });
@@ -88,6 +90,10 @@ $(function () {
 
             console.log("sending");
             server.server.send(getJSON("normal"));
+        });
+
+        $("#newBoardIcon").click(function () {
+            server.server.send(getJSON("addBoard"));
         });
 
         $("#groupFormButton").click(function () {
