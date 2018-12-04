@@ -79,7 +79,7 @@ namespace TaskBoard.Hubs
                             Title = item.title,
                             Body = item.body,
                             Owner = item.owner,
-                            IsLocked = (item.isLocked == 1) ? true : false
+                            IsLocked = (item.locked.ToString().Equals("1")) ? true : false
                         });
                     }
                 }
