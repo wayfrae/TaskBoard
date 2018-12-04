@@ -1,8 +1,8 @@
 ﻿//set signalR
 
 $(function () {
-	$('[data-toggle="tooltip"]').tooltip()
-})
+    $('[data-toggle="tooltip"]').tooltip();
+});
 
 //hide some elements on load
 $(document).ready(function () {
@@ -18,6 +18,10 @@ $("span.fa-unlock").click(function () {
 $("span.fa-lock").click(function () {
 	$(this).hide();
 	$(this).siblings("span.fa-unlock").show();
+});
+
+$("#groupFormButton").click(function () {
+
 });
 
 function getJSON() {

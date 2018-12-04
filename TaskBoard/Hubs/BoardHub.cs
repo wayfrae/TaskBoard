@@ -13,6 +13,26 @@ namespace TaskBoard.Hubs
     public class BoardHub : Hub
     {
         Singleton instance = Singleton.Instance;
+        private Controllers.BoardController bc = new Controllers.BoardController();
+
+        public void AddBoard(int groupId)
+        {
+            bc.CreateBoard("", "", groupId);
+            instance.Boards = bc.GetAllBoards();
+        }
+
+        public void AddGroup(string name)
+        {
+            bc.CreateGroup(name);
+            instance.Groups = bc.GetAllGroups();
+            instance.Boards = bc.GetAllBoards();
+        }
+
+        public void DeleteBoard(int boardId)
+        {
+            bc.RemoveBoard(boardId);
+            instance.Boards = bc.GetAllBoards();
+        }
 
         public void Send(string json)
         {
