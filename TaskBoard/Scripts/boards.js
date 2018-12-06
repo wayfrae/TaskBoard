@@ -54,6 +54,9 @@ function getJSON(type) {
                 if ($(this).hasClass('card-title')) {
                     title = $(this).text();
                 }
+                if ($(this).hasClass('card-body')) {
+                    body = $(this).text();
+                }
                 if ($(this).hasClass('fa-unlock') && $(this).is(':visible')) {
                     locked = 0;
                 }
