@@ -61,10 +61,6 @@ function getJSON(type) {
                     locked = 1;
                 }
             });
-
-            if ($(this).hasClass('card-body')) {
-                body = $(this).children('p').text();
-            }
         });   
         obj.push({ id: id, title: title, body: body, locked: locked, owner: owner });
         count++;
@@ -129,7 +125,7 @@ function updateAllBoards(obj) {
         console.log("ObjectID: " + obj[i].id);
         console.log($("#boardContainer").find("div.card[boardID=" + obj[i].id + "]"));
         $("#boardContainer").find("div.card[boardID=" + obj[i].id + "]").children('div').each(function () {
-            
+            var lockedP;
             $(this).children('span').each(function () {
                 if ($(this).is(":focus")) {
                     return false;
@@ -139,6 +135,7 @@ function updateAllBoards(obj) {
                 }
 
                 if (obj[i].locked == 0) {
+                    lockedP = 0;
                     if ($(this).hasClass('fa-lock')) {
                         $(this).hide();
                     }
@@ -146,6 +143,7 @@ function updateAllBoards(obj) {
                         $(this).show();
                     }
                 } else {
+                    lockedP = 1;
                     if ($(this).hasClass('fa-lock')) {
                         $(this).show();
                     }
@@ -159,7 +157,22 @@ function updateAllBoards(obj) {
                 if ($(this).children('p').is(":focus")) {
                     return false;
                 }
-                $(this).children('p').text(obj[i].body);
+            $(this).children('p').text(obj[i].body);
+
+
+            if ($(this).hasClass('card-body')) {
+                $(this).children('p').each(function () {
+                    if (lockedP == 1) {
+                        $(this).attr('contenteditable', 'false');
+                        console.log("lockedP");
+                        console.log($(this));
+                    } else {
+                        $(this).attr('contenteditable', 'true');
+                        console.log("lockedP");
+                        console.log($(this));
+                    }
+                })
+            }
             }
         });        
     }
