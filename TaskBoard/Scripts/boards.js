@@ -100,7 +100,8 @@ $(function () {
         });
 
         $(".fa-trash-alt").click(function () {
-            boardIdForRemoval = this.parentNode.parentNode.boardid;
+            boardIdForRemoval = $(this).parent().parent().attr("boardID");
+            console.log(boardIdForRemoval);
             server.server.send(getJSON("removeBoard"));
         });
     });
@@ -121,62 +122,101 @@ $("#addGroupButton").click(function () {
     $("#groupForm").toggle("slide", { direction: "left"}, 500);
 });
 
+function addBoardToPage(id) {    
+    $("#newBoard").before(`<div class="card shadow" boardID="` + id + `">
+            <div class="card-header">
+                <span class="h4 card-title" contenteditable="true"></span>
+                <span name="lockIcon"
+                      data-toggle="tooltip"
+                      data-placement="top"
+                      title="Click to unlock" class="fa fa-2x fa-lock pull-right"></span>
+                <span name="unlockIcon"
+                      data-toggle="tooltip"
+                      data-placement="top"
+                      title="Click to lock"
+                      class="fa fa-2x fa-unlock pull-right"></span>
+            </div>
+            <div class="card-body">
+                <p contenteditable="true" class="card-text"></p>
+                <span data-toggle="tooltip"
+                      data-placement="top"
+                      title="Delete board"
+                      class="fa fa-2x fa-trash-alt text-danger pull-right">
+                </span>
+            </div>
+        </div>`);
+    $("span.fa-lock").hide();
+}
+
+function removeBoardFromPage() {
+    $("#boardContainer").find("div.card[boardID=" + boardIdForRemoval + "]").remove();
+}
 
 //update all the boards
 function updateAllBoards(obj) {
+    var visibleBoards = $("#boardContainer").children('div').length - 1;
     for (var i = 0; i < obj.length; i++) {
-        console.log("ObjectID: " + obj[i].id);
-        console.log($("#boardContainer").find("div.card[boardID=" + obj[i].id + "]"));
-        $("#boardContainer").find("div.card[boardID=" + obj[i].id + "]").children('div').each(function () {
-            var lockedP;
-            $(this).children('span').each(function () {
-                if ($(this).is(":focus")) {
-                    return false;
-                }
-                if ($(this).hasClass('card-title')) {
-                    $(this).text(obj[i].title);
-                }
-
-                if (obj[i].locked == 0) {
-                    lockedP = 0;
-                    if ($(this).hasClass('fa-lock')) {
-                        $(this).hide();
+        //console.log("Object length: " + obj.length);
+        //console.log("Elements length: " + $("#boardContainer").children('div').length);
+        //console.log($("#boardContainer").find("div.card[boardID=" + obj[i].id + "]"));
+        if (visibleBoards < obj.length) {
+            addBoardToPage(obj[obj.length - 1]);
+            break;
+        } if (visibleBoards > obj.length) {
+            removeBoardFromPage();
+            break;
+        } else {
+            $("#boardContainer").find("div.card[boardID=" + obj[i].id + "]").children('div').each(function () {
+                var lockedP;
+                $(this).children('span').each(function () {
+                    if ($(this).is(":focus")) {
+                        return false;
                     }
-                    if ($(this).hasClass('fa-unlock')) {
-                        $(this).show();
+                    if ($(this).hasClass('card-title')) {
+                        $(this).text(obj[i].title);
                     }
-                } else {
-                    lockedP = 1;
-                    if ($(this).hasClass('fa-lock')) {
-                        $(this).show();
-                    }
-                    if ($(this).hasClass('fa-unlock')) {
-                        $(this).hide();
-                    }
-                }                
-            });
 
-            if ($(this).hasClass('card-body')) {
-                if ($(this).children('p').is(":focus")) {
-                    return false;
-                }
-            $(this).children('p').text(obj[i].body);
-
-
-            if ($(this).hasClass('card-body')) {
-                $(this).children('p').each(function () {
-                    if (lockedP == 1) {
-                        $(this).attr('contenteditable', 'false');
-                        console.log("lockedP");
-                        console.log($(this));
+                    if (obj[i].locked == 0) {
+                        lockedP = 0;
+                        if ($(this).hasClass('fa-lock')) {
+                            $(this).hide();
+                        }
+                        if ($(this).hasClass('fa-unlock')) {
+                            $(this).show();
+                        }
                     } else {
-                        $(this).attr('contenteditable', 'true');
-                        console.log("lockedP");
-                        console.log($(this));
+                        lockedP = 1;
+                        if ($(this).hasClass('fa-lock')) {
+                            $(this).show();
+                        }
+                        if ($(this).hasClass('fa-unlock')) {
+                            $(this).hide();
+                        }
                     }
-                })
-            }
-            }
-        });        
+                });
+
+                if ($(this).hasClass('card-body')) {
+                    if ($(this).children('p').is(":focus")) {
+                        return false;
+                    }
+                    $(this).children('p').text(obj[i].body);
+
+
+                    if ($(this).hasClass('card-body')) {
+                        $(this).children('p').each(function () {
+                            if (lockedP == 1) {
+                                $(this).attr('contenteditable', 'false');
+                                console.log("lockedP");
+                                console.log($(this));
+                            } else {
+                                $(this).attr('contenteditable', 'true');
+                                console.log("lockedP");
+                                console.log($(this));
+                            }
+                        })
+                    }
+                }
+            }); 
+        }               
     }
 }

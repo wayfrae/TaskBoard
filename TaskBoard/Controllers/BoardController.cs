@@ -279,7 +279,7 @@ namespace TaskBoard.Controllers
             SqlConnection conn = new SqlConnection(connectionString);
             conn.Open();
 
-            string sql = "delete from board where id=" + id;
+            string sql = "delete from boards where id=" + id;
             SqlCommand command = new SqlCommand(sql, conn);
             command.ExecuteNonQuery();
 
