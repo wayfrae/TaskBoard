@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Web;
+using System.Web.Script.Serialization;
 using Microsoft.AspNet.SignalR;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -38,11 +39,17 @@ namespace TaskBoard.Hubs
         {
             //Console.WriteLine(json);
             //JObject jobject = JObject.Parse(json);
-            instance.Boards = Parse(json);
-            Clients.All.broadcast(json);
+            Parse(json);
+            Clients.All.broadcast(CreateJSON());
         }
 
-        private ObservableCollection<Board> Parse(string json)
+        public string CreateJSON()
+        {
+            var serializer = new JavaScriptSerializer();
+            return serializer.Serialize(instance.Boards);
+        }
+
+        private void Parse(string json)
         {
             ObservableCollection<Board> boards = new ObservableCollection<Board>();
 
@@ -65,7 +72,7 @@ namespace TaskBoard.Hubs
                     }
                     else if (item.type == "removeBoard")
                     {
-                        DeleteBoard(int.Parse(item.boardId.ToString()));
+                        DeleteBoard(int.Parse(item.boardID.ToString()));
                         cont = false;
                     }
                 }
@@ -90,10 +97,9 @@ namespace TaskBoard.Hubs
 
             if (cont)
             {
-                Clients.All.broadcast(json);
-            }
+                instance.Boards = boards;
+            }        
             
-            return boards;
         }
 
     }
