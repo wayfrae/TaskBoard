@@ -31,8 +31,8 @@ function getJSON(type) {
     var id, title, body, locked, owner;
 
     if (type == "addBoard") {
-        var selection = $("#groupSelection");
-        var groupId = selection.children[selection.selectedIndex].value;
+        var groupId = $("#groupSelection").find(":selected").val();
+        //var groupId = selection.children[selection.selectedIndex].value;
         obj.push({ type: type, groupId: groupId });
     } else if (type == "addGroup") {
         var name = $("#groupForm").children("input:first").val();
