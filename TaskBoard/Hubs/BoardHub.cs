@@ -38,8 +38,8 @@ namespace TaskBoard.Hubs
         {
             //Console.WriteLine(json);
             //JObject jobject = JObject.Parse(json);
-            //Clients.All.broadcast(json);
             instance.Boards = Parse(json);
+            Clients.All.broadcast(json);
         }
 
         private ObservableCollection<Board> Parse(string json)
@@ -55,17 +55,17 @@ namespace TaskBoard.Hubs
                 {
                     if (item.type == "addBoard")
                     {
-                        AddBoard(item.groupId);
+                        AddBoard(int.Parse(item.groupId.ToString()));
                         cont = false;
                     }
                     else if (item.type == "addGroup")
                     {
-                        AddGroup(item.name);
+                        AddGroup(item.name.ToString());
                         cont = false;
                     }
                     else if (item.type == "removeBoard")
                     {
-                        DeleteBoard(item.boardId);
+                        DeleteBoard(int.Parse(item.boardId.ToString()));
                         cont = false;
                     }
                 }
