@@ -53,10 +53,7 @@ function getJSON(type) {
             $(this).children('span').each(function () {
                 if ($(this).hasClass('card-title')) {
                     title = $(this).text();
-                }
-                if ($(this).hasClass('card-body')) {
-                    body = $(this).text();
-                }
+                }                
                 if ($(this).hasClass('fa-unlock') && $(this).is(':visible')) {
                     locked = 0;
                 }
@@ -64,6 +61,9 @@ function getJSON(type) {
                     locked = 1;
                 }
             });
+            if ($(this).hasClass('card-body')) {
+                body = $(this).children('p').text();
+            }
         });   
         obj.push({ id: id, title: title, body: body, locked: locked, owner: owner });
         count++;
