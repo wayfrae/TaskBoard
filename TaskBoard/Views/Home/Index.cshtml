@@ -18,7 +18,7 @@
         <button class="btn btn-secondary" id="addGroupButton" type="button"><span class="fa fa-user-plus"></span></button>
     </div>
     <div class="input-group-append" id="groupForm">
-        <input type="text" class="form-control" style="border-radius: 0;"  placeholder="Group Name" aria-label="Group Name">
+        <input type="text" class="form-control" id="groupInput" style="border-radius: 0;"  placeholder="Group Name" aria-label="Group Name">
         <div class="input-group-append">
             <button class="btn btn-secondary" style="border-top-left-radius: 0; border-bottom-left-radius: 0;"  type="button" id="groupFormButton">Confirm</button>
         </div>
@@ -30,30 +30,31 @@
 <div class="row" id="boardContainer">
     @foreach (var board in Model.Boards)
     {
-        <div class="card shadow" boardID="@Html.DisplayFor(item=>board.ID)">
-            <div class="card-header">
-                <span class="h4 card-title" contenteditable="true">@Html.DisplayFor(item => board.Title)</span>
-                <span name="lockIcon"
-                      data-toggle="tooltip"
-                      data-placement="top"
-                      title="Click to unlock" class="fa fa-2x fa-lock pull-right"></span>
-                <span name="unlockIcon"
-                      data-toggle="tooltip"
-                      data-placement="top"
-                      title="Click to lock"
-                      class="fa fa-2x fa-unlock pull-right"></span>
-            </div>
-            <div class="card-body">
-                <p contenteditable="true" class="card-text">@Html.DisplayFor(item => board.Body)</p>
-                <span data-toggle="tooltip"
-                      data-placement="top"
-                      title="Delete board"
-                      class="fa fa-2x fa-trash-alt text-danger pull-right">
-                </span>
-            </div>
+    <div class="card shadow" boardID="@Html.DisplayFor(item=>board.ID)" groupID="@Html.DisplayFor(item=>board.Owner)">
+        <div class="card-header">
+            <span class="h4 card-title" contenteditable="false">@Html.DisplayFor(item => board.Title)</span>
+            <span name="lockIcon"
+                  data-locked="@board.IsLocked.ToString()"
+                  data-toggle="tooltip"
+                  data-placement="top"
+                  title="Click to unlock" class="fa fa-2x fa-lock pull-right"></span>
+            <span name="unlockIcon"
+                  data-toggle="tooltip"
+                  data-locked="@board.IsLocked.ToString()"
+                  data-placement="top"
+                  title="Click to lock"
+                  class="fa fa-2x fa-unlock float-right"></span>
+        </div>        
+        <div class="card-body d-flex flex-column">
+            <p contenteditable="false" class="card-text">@Html.DisplayFor(item => board.Body)</p>
+            <span data-toggle="tooltip"
+                  data-placement="top"
+                  title="Delete board"
+                  class="fa fa-2x fa-trash-alt text-danger ml-auto mt-auto">
+            </span>
         </div>
+    </div>
     }
     <div class="card text-center shadow-lg" id="newBoard"><span class="fa fa-plus" id="newBoardIcon"></span></div>
-
 
 </div>

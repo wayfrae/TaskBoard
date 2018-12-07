@@ -54,11 +54,6 @@ nav{
     padding: 5px;
 }
 
-.fa-trash-alt, .fa-trash-o{
-    position: absolute;
-    bottom:15px;
-    right: 20px;
-}
 
 .fa-trash-o:hover, .fa-trash-alt:hover, .fa-unlock:hover, .fa-lock:hover {
     background-color: lightgray;

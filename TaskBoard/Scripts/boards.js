@@ -1,30 +1,19 @@
 ﻿//set signalR
 
 var boardIdForRemoval = "";
-
+var lockedID = 0;
 $(function () {
     $('[data-toggle="tooltip"]').tooltip();
 });
 
 //hide some elements on load
 $(document).ready(function () {
-    $("span.fa-lock").hide();
+    $("span.fa-lock[data-locked=False]").hide();
+    $("span.fa-unlock[data-locked=True]").hide();
     $("#groupForm").hide();
 });
 
-$("span.fa-unlock").click(function () {
-	$(this).hide();
-	$(this).siblings("span.fa-lock").show();
-});
 
-$("span.fa-lock").click(function () {
-	$(this).hide();
-	$(this).siblings("span.fa-unlock").show();
-});
-
-$("#groupFormButton").click(function () {
-
-});
 
 function getJSON(type) {
     var obj = [];
@@ -45,7 +34,6 @@ function getJSON(type) {
 
     var count = 0;
     $('#boardContainer').children('div.card:not(#newBoard)').each(function () {
-        console.log($(this));
         id = $(this).attr('boardID');
         owner = $('#groupSelection').find(":selected").val();
         $(this).children('div').each(function () {
@@ -53,12 +41,12 @@ function getJSON(type) {
             $(this).children('span').each(function () {
                 if ($(this).hasClass('card-title')) {
                     title = $(this).text();
-                }                
-                if ($(this).hasClass('fa-unlock') && $(this).is(':visible')) {
-                    locked = 0;
-                }
-                if ($(this).hasClass('fa-lock') && $(this).is(':visible')) {
+                }               
+                console.log($(this).attr("data-locked") == "True");
+                if ($(this).has("attr", "data-locked") && $(this).attr("data-locked") == "True") {
                     locked = 1;
+                } else {
+                    locked = 0;
                 }
             });
             if ($(this).hasClass('card-body')) {
@@ -72,6 +60,14 @@ function getJSON(type) {
     return JSON.stringify(obj);
 }
 
+$('#groupSelection').change(function () {
+    //console.log($("#boardContainer").children('div.card').has('attr', 'groupID'));
+    $("#boardContainer").children('div.card.shadow').each(function () {
+        $(this).addClass('d-none');
+    });
+    $("#boardContainer").children('div.card[groupID=' + $('#groupSelection').val() + ']').toggleClass('d-none');
+
+});
 
 $(function () {
     // Declare a proxy to reference the hub.     
@@ -81,8 +77,17 @@ $(function () {
         // Add the message to the page.
         console.log(message);
         var obj = JSON.parse(message);
-        //console.log(obj);
-        updateAllBoards(obj);
+        //if json object is for group
+        if (typeof (obj[0].Name) !== 'undefined') {
+            $('#groupSelection').find('option').remove().end();
+            for (var i = 0; i < obj.length; i++) {
+                $('#groupSelection').append(new Option(obj[i].Name, obj[i].ID));
+            }
+        } else {
+            console.log(obj);
+            updateAllBoards(obj);
+        }
+        
     };
 
     $.connection.hub.start().done(function () {
@@ -97,12 +102,31 @@ $(function () {
 
         $("#groupFormButton").click(function () {
             server.server.send(getJSON("addGroup"));
+            $("#groupInput").val("");
+            $("#groupForm").toggle("slide", { direction: "left" }, 250);
         });
 
         $(".fa-trash-alt").click(function () {
             boardIdForRemoval = $(this).parent().parent().attr("boardID");
-            console.log(boardIdForRemoval);
+            //console.log(boardIdForRemoval);
             server.server.send(getJSON("removeBoard"));
+        });
+
+        $("span.fa-unlock").click(function () {
+            $(this).hide();
+            $(this).siblings("span.fa-lock").attr("data-locked","True").show();
+            server.server.send(getJSON("normal"));
+            lockedID = $(this).parent().parent().attr("boardID");
+        });
+
+        $("span.fa-lock").click(function () {
+
+            if (lockedID == $(this).parent().parent().attr("boardID")) {
+                $(this).hide();
+                $(this).siblings("span.fa-unlock").attr("data-locked", "False" ).show();
+                server.server.send(getJSON("normal"));
+            }
+
         });
     });
 });
@@ -122,22 +146,24 @@ $("#addGroupButton").click(function () {
     $("#groupForm").toggle("slide", { direction: "left"}, 500);
 });
 
-function addBoardToPage(id) {    
-    $("#newBoard").before(`<div class="card shadow" boardID="` + id + `">
+function addBoardToPage(obj) {    
+    $("#newBoard").before(`<div class="card shadow" boardID="` + obj.ID + `" groupID="` + obj.Owner + `">
             <div class="card-header">
-                <span class="h4 card-title" contenteditable="true"></span>
+                <span class="h4 card-title" contenteditable="true">&nbsp;</span>
                 <span name="lockIcon"
                       data-toggle="tooltip"
+                      data-locked="True"
                       data-placement="top"
-                      title="Click to unlock" class="fa fa-2x fa-lock pull-right"></span>
+                      title="Click to unlock" class="fa fa-2x fa-lock pull-right hidden"></span>
                 <span name="unlockIcon"
+                      data-locked="True"
                       data-toggle="tooltip"
                       data-placement="top"
                       title="Click to lock"
                       class="fa fa-2x fa-unlock pull-right"></span>
             </div>
             <div class="card-body">
-                <p contenteditable="true" class="card-text"></p>
+                <p contenteditable="true" class="card-text">&nbsp;</p>
                 <span data-toggle="tooltip"
                       data-placement="top"
                       title="Delete board"
@@ -145,7 +171,7 @@ function addBoardToPage(id) {
                 </span>
             </div>
         </div>`);
-    $("span.fa-lock").hide();
+    lockedID = obj.ID;
 }
 
 function removeBoardFromPage() {
@@ -157,26 +183,27 @@ function updateAllBoards(obj) {
     var visibleBoards = $("#boardContainer").children('div').length - 1;
     for (var i = 0; i < obj.length; i++) {
         //console.log("Object length: " + obj.length);
-        //console.log("Elements length: " + $("#boardContainer").children('div').length);
+        //console.log("Visible boards length: " + visibleBoards);
         //console.log($("#boardContainer").find("div.card[boardID=" + obj[i].id + "]"));
         if (visibleBoards < obj.length) {
             addBoardToPage(obj[obj.length - 1]);
             break;
-        } if (visibleBoards > obj.length) {
+        }else if (visibleBoards > obj.length) {
             removeBoardFromPage();
             break;
         } else {
-            $("#boardContainer").find("div.card[boardID=" + obj[i].id + "]").children('div').each(function () {
+            $("#boardContainer").find("div.card[boardID=" + obj[i].ID + "]").children('div').each(function () {
                 var lockedP;
                 $(this).children('span').each(function () {
                     if ($(this).is(":focus")) {
                         return false;
                     }
                     if ($(this).hasClass('card-title')) {
-                        $(this).text(obj[i].title);
-                    }
+                        $(this).text(obj[i].Title);
 
-                    if (obj[i].locked == 0) {
+                    }
+                    //console.log(obj[i].IsLocked);
+                    if (!obj[i].IsLocked) {
                         lockedP = 0;
                         if ($(this).hasClass('fa-lock')) {
                             $(this).hide();
@@ -199,19 +226,21 @@ function updateAllBoards(obj) {
                     if ($(this).children('p').is(":focus")) {
                         return false;
                     }
-                    $(this).children('p').text(obj[i].body);
+                    $(this).children('p').text(obj[i].Body);
 
 
                     if ($(this).hasClass('card-body')) {
                         $(this).children('p').each(function () {
-                            if (lockedP == 1) {
+                            var lockNum = $(this).parent().parent().attr("boardID");
+                            if (lockedP == 1 && lockNum != lockedID) {
                                 $(this).attr('contenteditable', 'false');
-                                console.log("lockedP");
-                                console.log($(this));
-                            } else {
+                                $(this).parent().siblings('.card-title').attr("contenteditable", "false");
+                            } else if (lockedP == 1 && lockNum == lockedID) {
+                                $(this).parent().siblings('.card-header').children('.card-title').attr("contenteditable", "true");
                                 $(this).attr('contenteditable', 'true');
-                                console.log("lockedP");
-                                console.log($(this));
+                            }else {
+                                $(this).parent().siblings('.card-header').children('.card-title').attr("contenteditable", "false");
+                                $(this).attr('contenteditable', 'false');
                             }
                         })
                     }

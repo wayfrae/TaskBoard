@@ -68,6 +68,8 @@ namespace TaskBoard.Hubs
                     else if (item.type == "addGroup")
                     {
                         AddGroup(item.name.ToString());
+                        var serializer = new JavaScriptSerializer();
+                        Clients.All.broadcast(serializer.Serialize(instance.Groups));
                         cont = false;
                     }
                     else if (item.type == "removeBoard")
@@ -80,14 +82,19 @@ namespace TaskBoard.Hubs
                 {
                     if (item != null)
                     {
-                        boards.Add(new Board
-                        {
-                            ID = item.id,
-                            Title = item.title,
-                            Body = item.body,
-                            Owner = item.owner,
-                            IsLocked = (item.locked.ToString().Equals("1")) ? true : false
-                        });
+                        int tempID, tempOwner;
+                        int.TryParse(item.id.ToString(), out tempID);
+                        int.TryParse(item.owner.ToString(), out tempOwner);
+
+                        Board b = new Board();
+
+                        b.ID = tempID;
+                        b.Title = item.title.ToString();
+                        b.Body = item.body.ToString();
+                        b.Owner = tempOwner;
+                        b.IsLocked = (item.locked.ToString().Equals("1")) ? true : false;
+                        
+                        boards.Add(b);
                     }
                 }
 

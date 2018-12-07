@@ -42,7 +42,7 @@ namespace TaskBoard.Controllers
             {
                 conn.Open();
                 string sql = "IF EXISTS (SELECT * FROM boards WHERE id = @ID) BEGIN update boards set title="
-                + "@title, body=@body where id=@ID END ELSE BEGIN insert into boards values ("
+                + "@title, body=@body, locked=@locked where id=@ID END ELSE BEGIN insert into boards values ("
                 + "@title, @body, @owner, @locked) END";
                 SqlCommand command = new SqlCommand(sql, conn);
                 command.Parameters.Add("@ID", SqlDbType.Int);
@@ -54,7 +54,7 @@ namespace TaskBoard.Controllers
                 command.Parameters["@title"].Value = board.Title;
                 command.Parameters["@body"].Value = board.Body;
                 command.Parameters["@owner"].Value = board.Owner;
-                command.Parameters["@locked"].Value = board.IsLocked.Equals("True") ? 1 : 0;
+                command.Parameters["@locked"].Value = board.IsLocked ? 1 : 0;
                 command.ExecuteNonQuery();
             }
 
@@ -177,7 +177,7 @@ namespace TaskBoard.Controllers
                     Title = ds.Tables[0].Rows[i][1].ToString(),
                     Body = ds.Tables[0].Rows[i][2].ToString(),
                     Owner = int.Parse(ds.Tables[0].Rows[i][3].ToString()),
-                    IsLocked = int.Parse(ds.Tables[0].Rows[i][4].ToString()) == 0 ? false : true
+                    IsLocked = int.Parse(ds.Tables[0].Rows[i][4].ToString()) == 1 ? true : false
                 });
             }          
 
