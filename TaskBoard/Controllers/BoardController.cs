@@ -54,7 +54,7 @@ namespace TaskBoard.Controllers
                 command.Parameters["@title"].Value = board.Title;
                 command.Parameters["@body"].Value = board.Body;
                 command.Parameters["@owner"].Value = board.Owner;
-                command.Parameters["@locked"].Value = board.IsLocked ? 1 : 0;
+                command.Parameters["@locked"].Value = board.IsLocked == true ? 1 : 0;
                 command.ExecuteNonQuery();
             }
 

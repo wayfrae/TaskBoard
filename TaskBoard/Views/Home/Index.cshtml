@@ -9,6 +9,7 @@
         <label class="input-group-text" for="groupSelection">Group: </label>
     </div>
     <select class="custom-select" id="groupSelection">
+        <option value="-1">Select a group to see boards...</option>
         @foreach (var group in Model.Groups)
         {
             <option value="@Html.DisplayFor(item => group.ID)">@Html.DisplayFor(item => group.Name)</option>
@@ -31,13 +32,13 @@
     @foreach (var board in Model.Boards)
     {
     <div class="card shadow" boardID="@Html.DisplayFor(item=>board.ID)" groupID="@Html.DisplayFor(item=>board.Owner)">
-        <div class="card-header">
+        <div class="card-header" data-locked="@board.IsLocked.ToString()">
             <span class="h4 card-title" contenteditable="false">@Html.DisplayFor(item => board.Title)</span>
             <span name="lockIcon"
-                  data-locked="@board.IsLocked.ToString()"
+                  data-locked="@board.IsLocked.ToString()"                  
                   data-toggle="tooltip"
                   data-placement="top"
-                  title="Click to unlock" class="fa fa-2x fa-lock pull-right"></span>
+                  title="Click to unlock" class="fa fa-2x fa-lock float-right"></span>
             <span name="unlockIcon"
                   data-toggle="tooltip"
                   data-locked="@board.IsLocked.ToString()"

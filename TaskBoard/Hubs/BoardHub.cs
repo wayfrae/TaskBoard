@@ -75,6 +75,7 @@ namespace TaskBoard.Hubs
                     else if (item.type == "removeBoard")
                     {
                         DeleteBoard(int.Parse(item.boardId.ToString()));
+                        Clients.All.broadcast("{\"type\": \"removeBoard\", \"id\": " + item.boardId.ToString() + "}");
                         cont = false;
                     }
                 }

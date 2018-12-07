@@ -11,7 +11,18 @@ $(document).ready(function () {
     $("span.fa-lock[data-locked=False]").hide();
     $("span.fa-unlock[data-locked=True]").hide();
     $("#groupForm").hide();
+    $("#boardContainer").hide();
+    $("#newBoard").hide();
 });
+
+function updateLockIcons() {
+    
+    $("body").on("mousemove", function () {
+        $("span.fa-lock[data-locked=False]").hide();
+        $("span.fa-unlock[data-locked=True]").hide();
+    });
+    
+}
 
 
 
@@ -42,10 +53,10 @@ function getJSON(type) {
                 if ($(this).hasClass('card-title')) {
                     title = $(this).text();
                 }               
-                console.log($(this).attr("data-locked") == "True");
+
                 if ($(this).has("attr", "data-locked") && $(this).attr("data-locked") == "True") {
                     locked = 1;
-                } else {
+                } else if ($(this).has("attr", "data-locked") && $(this).attr("data-locked") == "False") {
                     locked = 0;
                 }
             });
@@ -56,16 +67,27 @@ function getJSON(type) {
         obj.push({ id: id, title: title, body: body, locked: locked, owner: owner });
         count++;
     });
-    //console.log(obj);
+    console.log("---------OBJECT---------" + JSON.stringify(obj));
     return JSON.stringify(obj);
 }
 
 $('#groupSelection').change(function () {
     //console.log($("#boardContainer").children('div.card').has('attr', 'groupID'));
+    console.log($(this).val());
+    if ($(this).val() == -1) {
+        $("#newBoard").hide();
+        console.log("hide");
+
+    } else {
+        console.log("show");
+        $("#boardContainer").show();
+        $("#newBoard").show();
+    }
     $("#boardContainer").children('div.card.shadow').each(function () {
         $(this).addClass('d-none');
     });
     $("#boardContainer").children('div.card[groupID=' + $('#groupSelection').val() + ']').toggleClass('d-none');
+    
 
 });
 
@@ -77,8 +99,11 @@ $(function () {
         // Add the message to the page.
         console.log(message);
         var obj = JSON.parse(message);
-        //if json object is for group
-        if (typeof (obj[0].Name) !== 'undefined') {
+        console.log(obj);
+        if (obj.type == 'removeBoard') {
+            console.log("removeBoard");
+            boardIdForRemoval = obj.id;
+        } else if (typeof (obj[0].Name) !== 'undefined') { //if json object is for group
             $('#groupSelection').find('option').remove().end();
             for (var i = 0; i < obj.length; i++) {
                 $('#groupSelection').append(new Option(obj[i].Name, obj[i].ID));
@@ -91,13 +116,17 @@ $(function () {
     };
 
     $.connection.hub.start().done(function () {
-        $('div.card').keyup(function () {
-            // Call the Send method on the hub.
-            server.server.send(getJSON("normal"));
-        });
-
-        $("#newBoardIcon").click(function () {
+                
+        //animate new board button
+        $("#newBoard").mousedown(function () {
+            $(this).removeClass("shadow-lg");
+            $(this).css("margin-top", "5.1%");
             server.server.send(getJSON("addBoard"));
+            updateLockIcons();
+        });
+        $("#newBoard").mouseup(function () {
+            $(this).addClass("shadow-lg");
+            $(this).css("margin-top", "5%");
         });
 
         $("#groupFormButton").click(function () {
@@ -106,42 +135,44 @@ $(function () {
             $("#groupForm").toggle("slide", { direction: "left" }, 250);
         });
 
-        $(".fa-trash-alt").click(function () {
+
+        //////////////////////////////////////////////////////////////////////
+        /////use event delegation so the new boards have button functions/////
+
+        //type new characters
+        $(document).on("keyup", function () {
+            server.server.send(getJSON("normal"));
+        });
+
+        //delete board
+        $(document).on("click", ".fa-trash-alt", function () {
             boardIdForRemoval = $(this).parent().parent().attr("boardID");
+            console.log(boardIdForRemoval);
             //console.log(boardIdForRemoval);
             server.server.send(getJSON("removeBoard"));
         });
 
-        $("span.fa-unlock").click(function () {
+        //lock board
+        $(document).on("click", "span.fa-unlock", function () {
             $(this).hide();
             $(this).attr("data-locked", "True");
             $(this).siblings("span.fa-lock").attr("data-locked", "True").show();
             lockedID = $(this).parent().parent().attr("boardID");
-
             server.server.send(getJSON("normal"));
         });
 
-        $("span.fa-lock").click(function () {
-
+        //unlock board
+        $(document).on("click", "span.fa-lock", function () {
             if (lockedID == $(this).parent().parent().attr("boardID")) {
                 $(this).hide();
-                $(this).siblings("span.fa-unlock").attr("data-locked", "False" ).show();
+                $(this).siblings("span.fa-unlock").attr("data-locked", "False").show();
                 server.server.send(getJSON("normal"));
             }
-
-        });
+        });        
     });
 });
 
-//animate new board button
-$("#newBoard").mousedown(function () {
-    $(this).removeClass("shadow-lg");
-    $(this).css("margin-top", "87px");
-});
-$("#newBoard").mouseup(function () {
-    $(this).addClass("shadow-lg");
-    $(this).css("margin-top", "85px");
-});
+
 
 //animate group form
 $("#addGroupButton").click(function () {
@@ -150,34 +181,41 @@ $("#addGroupButton").click(function () {
 
 function addBoardToPage(obj) {    
     $("#newBoard").before(`<div class="card shadow" boardID="` + obj.ID + `" groupID="` + obj.Owner + `">
-            <div class="card-header">
-                <span class="h4 card-title" contenteditable="true">&nbsp;</span>
-                <span name="lockIcon"
-                      data-toggle="tooltip"
-                      data-locked="True"
-                      data-placement="top"
-                      title="Click to unlock" class="fa fa-2x fa-lock pull-right hidden"></span>
-                <span name="unlockIcon"
-                      data-locked="True"
-                      data-toggle="tooltip"
-                      data-placement="top"
-                      title="Click to lock"
-                      class="fa fa-2x fa-unlock pull-right"></span>
-            </div>
-            <div class="card-body">
-                <p contenteditable="true" class="card-text">&nbsp;</p>
-                <span data-toggle="tooltip"
-                      data-placement="top"
-                      title="Delete board"
-                      class="fa fa-2x fa-trash-alt text-danger pull-right">
-                </span>
-            </div>
+            <div class="card-header" data-locked="False">
+            <span class="h4 card-title" contenteditable="false">&nbsp;</span>
+            <span name="lockIcon"
+                  data-locked="False"                  
+                  data-toggle="tooltip"
+                  data-placement="top"
+                  title="Click to unlock" class="fa fa-2x fa-lock float-right"></span>
+            <span name="unlockIcon"
+                  data-toggle="tooltip"
+                  data-locked="False"
+                  data-placement="top"
+                  title="Click to lock"
+                  class="fa fa-2x fa-unlock float-right"></span>
+        </div>        
+        <div class="card-body d-flex flex-column">
+            <p contenteditable="false" class="card-text">&nbsp;</p>
+            <span data-toggle="tooltip"
+                  data-placement="top"
+                  title="Delete board"
+                  class="fa fa-2x fa-trash-alt text-danger ml-auto mt-auto">
+            </span>
+        </div>
         </div>`);
     lockedID = obj.ID;
 }
 
 function removeBoardFromPage() {
-    $("#boardContainer").find("div.card[boardID=" + boardIdForRemoval + "]").remove();
+    if (boardIdForRemoval != null || boardIdForRemoval != "") {
+        $("#boardContainer").find("div.card[boardID=" + boardIdForRemoval + "]").toggle("slide", { direction: "left" }, 500, function () {
+            $(this).remove();
+        });
+        $("div.tooltip-inner").hide();
+        $("div.arrow").hide();
+    }
+    
 }
 
 //update all the boards
