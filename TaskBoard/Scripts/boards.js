@@ -114,9 +114,11 @@ $(function () {
 
         $("span.fa-unlock").click(function () {
             $(this).hide();
-            $(this).siblings("span.fa-lock").attr("data-locked","True").show();
-            server.server.send(getJSON("normal"));
+            $(this).attr("data-locked", "True");
+            $(this).siblings("span.fa-lock").attr("data-locked", "True").show();
             lockedID = $(this).parent().parent().attr("boardID");
+
+            server.server.send(getJSON("normal"));
         });
 
         $("span.fa-lock").click(function () {
