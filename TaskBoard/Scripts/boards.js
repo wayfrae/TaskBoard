@@ -105,6 +105,7 @@ $(function () {
             boardIdForRemoval = obj.id;
         } else if (typeof (obj[0].Name) !== 'undefined') { //if json object is for group
             $('#groupSelection').find('option').remove().end();
+            $('#groupSelection').append(new Option("Select a group to see boards...", -1));
             for (var i = 0; i < obj.length; i++) {
                 $('#groupSelection').append(new Option(obj[i].Name, obj[i].ID));
             }
